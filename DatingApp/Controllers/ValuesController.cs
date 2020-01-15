@@ -20,29 +20,30 @@ using Microsoft.Net.Http.Headers;
 namespace DatingApp.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class ValuesController : Controller
     {
         // readonly private  _context
         private readonly DataContext _context;
         public ValuesController(DataContext context)
         {
-             _context=context;
-           
+            _context = context;
+
         }
 
         // GET api/values
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var values= await _context.Values.ToListAsync();
+            var values = await _context.Values.ToListAsync();
             return Ok(values);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-         public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var values= await _context.Values.FirstOrDefaultAsync(x=>x.ID==id);
+            var values = await _context.Values.FirstOrDefaultAsync(x => x.ID == id);
             return Ok(values);
         }
 
