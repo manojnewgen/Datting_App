@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatingApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200115113644_AddUserEntity")]
-    partial class AddUserEntity
+    [Migration("20200116113729_InitalCreate")]
+    partial class InitalCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,10 +30,15 @@ namespace DatingApp.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("BLOB");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Username")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Users");
                 });
@@ -50,6 +55,13 @@ namespace DatingApp.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Values");
+                });
+
+            modelBuilder.Entity("DatingApp.Models.User", b =>
+                {
+                    b.HasOne("DatingApp.Models.User", null)
+                        .WithMany("Users")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }
