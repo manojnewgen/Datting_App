@@ -16,14 +16,16 @@ namespace DatingApp.Data
         }
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var result = Task.Run(() => _context.Users.FirstOrDefault(x => x.Username == username));
+            var user = await result;
+            // var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
             if (user == null)
             {
                 return null;
             }
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-             return null;
+                return null;
 
             return user;
         }
@@ -64,8 +66,8 @@ namespace DatingApp.Data
 
             }
         }
-
         public async Task<bool> UserExists(string user)
+
         {
             if (await _context.Users.AnyAsync(x => x.Username == user))
                 return true;

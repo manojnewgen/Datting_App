@@ -1,3 +1,5 @@
+using System.Net;
+using System.Collections.Immutable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using DatingApp.Helpers;
 
 namespace DatingApp
 {
@@ -47,12 +52,13 @@ namespace DatingApp
             services.AddControllers();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options=>{
-                    options.TokenValidationParameters= new  TokenValidationParameters
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuerSigningKey = true,
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                                .GetBytes(Configuration.GetSection("AppSetting:Token").Value)),
+                                    .GetBytes(Configuration.GetSection("AppSetting:Token").Value)),
                             ValidateIssuer = false,
                             ValidateAudience = false
                         };
@@ -67,16 +73,32 @@ namespace DatingApp
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        var error = context.Features.Get<IExceptionHandlerFeature>();
+                        if (error != null)
+                        {
+                            context.Response.AddApllicationError(error.Error.Message);
+                            await context.Response.WriteAsync(error.Error.Message);
+                        }
+                    });
+                });
+            }
 
             // app.UseHttpsRedirection();
             app.UseRouting();
- 
+
             app.UseAuthentication();
- 
+
             app.UseAuthorization();
- 
+
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
- 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

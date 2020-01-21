@@ -53,6 +53,8 @@ namespace DatingApp.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserForLoginDto userforlogintto)
         {
+
+            // throw new Exception("Computer says no");
             var userFromRepo = await _repo.Login(userforlogintto.Username.ToLower(), userforlogintto.Password);
 
             if (userFromRepo == null)
@@ -61,7 +63,7 @@ namespace DatingApp.Controllers
             var claim = new[]{
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
                 new Claim(ClaimTypes.Name, userFromRepo.Username)
-            };
+                 };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSetting:Token").Value));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -82,6 +84,10 @@ namespace DatingApp.Controllers
             {
                 token = tokenHandler.WriteToken(token)
             });
+
+
+            // throw new Exception("Invalid exception");
+
         }
     }
 }
