@@ -27,34 +27,31 @@ namespace DatingApp.Controllers
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                if (userForRegisterDto.Username == null || userForRegisterDto.Username == null)
-                    BadRequest("Usename or passsword is null");
-            }
+    {
+                if (!ModelState.IsValid)
+                {
+                    if (userForRegisterDto.Username == null || userForRegisterDto.Username == null)
+                    return BadRequest("Usename or passsword is null");
+                }
 
-            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-            if (await _repo.UserExists(userForRegisterDto.Username))
-                BadRequest("User Already does exists");
+                    userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+                if (await _repo.UserExists(userForRegisterDto.Username)){
+                     return BadRequest("User Already does exists");
+                }
+        
+                var userToCreate = new User
+                {
+                    Username = userForRegisterDto.Username
 
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username
+                };
 
-            };
+                var CeatetedUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
 
-            var CeatetedUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
-
-            return StatusCode(201);
-
-
+                return StatusCode(201);
         }
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserForLoginDto userforlogintto)
         {
-
-            // throw new Exception("Computer says no");
             var userFromRepo = await _repo.Login(userforlogintto.Username.ToLower(), userforlogintto.Password);
 
             if (userFromRepo == null)

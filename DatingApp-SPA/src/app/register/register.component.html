@@ -6,15 +6,6 @@
     <input type="text" class="form-control" name="username" required placeholder="Username" [(ngModel)]="model.username">
   </div>
   <div class="form-group">
-    <label for="favouriteValue">what is your favourite value</label>
-    <select  id="" class="form-control">
-      <!-- receive value from from parengts -->
-      <option *ngFor="let value of ValuesFromHome" [value]="value">{{value.name}}</option>
-    </select>
-
-  </div>
-
-  <div class="form-group">
     <input type="password" class="form-control" name="password" required placeholder="Password" [(ngModel)]="model.password">
   </div>
 
@@ -22,5 +13,5 @@
     <button class="btn btn-success" type="submit">Register</button>
     <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
   </div>
-  
+
 </form>
