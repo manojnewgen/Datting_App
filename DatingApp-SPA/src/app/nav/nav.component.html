@@ -12,7 +12,7 @@
       </li>
 
       <li class="nav-item" routerLinkActive="active" >
-        <a class="nav-link" [routerLink]="['/messages']"  >Messages</a>
+        <a class="nav-link" [routerLink]="['/messages']">Messages</a>
       </li>
     </ul>
 
@@ -21,7 +21,7 @@
        Welcome {{authService.decodedTokens?.unique_name | titlecase}} <!--  ? make unique_name propert optional-->
       </a>
       <div class="dropdown-menu" *dropdownMenu >
-        <a class="dropdown-item" href="#"> <i class="fa fa-user"></i>Edit Profile</a>
+        <a class="dropdown-item" [routerLink]="['/member/edit']" > <i class="fa fa-user"></i>Edit Profile</a>
        <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" (click)="logout()"><i class="fa fa-sign-out"></i> Logout</a>
       </div>
